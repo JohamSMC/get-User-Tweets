@@ -1,3 +1,5 @@
 {
-    "python.pythonPath": "/home/sebastian/.pyenv/shims/python"
+    "python.pythonPath": "/home/sebastian/.pyenv/shims/python",
+    "python.linting.flake8Enabled": true,
+    "python.linting.enabled": true
 }
