@@ -79,7 +79,7 @@ def check_element_exists(selectorType: str, selector: str):
     return True
 
 
-def select_user_twitter():
+def select_twitter_user():
     username: str = input("Enter the username on Twitter: @").lower()
     url: str = f"https://twitter.com/{username}"
     print(f"Accessing: {url}")
@@ -106,6 +106,10 @@ def select_user_twitter():
               + Message.RESET.value)
 
 
+def get_tweet_text():
+    pass
+
+
 if __name__ == "__main__":
     browser: str = None
     driver = None
@@ -116,5 +120,5 @@ if __name__ == "__main__":
     driver.minimize_window()
     driver.implicitly_wait(10)  # *Delay time for browser actions
 
-    select_user_twitter()
+    select_twitter_user()
     driver.close()
