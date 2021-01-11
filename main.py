@@ -84,7 +84,6 @@ def select_user_twitter():
     url: str = f"https://twitter.com/{username}"
     print(f"Accessing: {url}")
     driver.get(url=url)
-    driver.implicitly_wait(10)  # *Delay time for browser actions
 
     if check_element_exists(SelectorType.TAG_NAME.value,
                             Selector.TWEET_TAG.value):
@@ -115,5 +114,6 @@ if __name__ == "__main__":
     pathDriver = os.path.abspath(path=BrowserDriver.PATH_DRIVERS.value)
     driver = start_browser(pathDriver=pathDriver, broswer=browser)
     driver.minimize_window()
+    driver.implicitly_wait(10)  # *Delay time for browser actions
 
     select_user_twitter()
