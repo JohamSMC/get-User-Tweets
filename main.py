@@ -117,3 +117,4 @@ if __name__ == "__main__":
     driver.implicitly_wait(10)  # *Delay time for browser actions
 
     select_user_twitter()
+    driver.close()
