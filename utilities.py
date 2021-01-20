@@ -25,4 +25,3 @@ class Selector(enum.Enum):
         + "> path:nth-child(1)")
     PAGE_NOT_FOUND_CSS = "h1.css-901oao > span:nth-child(1)"
     TWEET_TAG = "article"
-    RETWEET = ""
