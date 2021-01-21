@@ -15,7 +15,7 @@ def select_browser():
                         + "\t    C) Google Chrome\n"
                         + "\t Option: "
                         + Message.INPUT.value).upper()
-        print(Message.RESET.value)
+        print(Message.RESET.value, end="")
         if browser != "F" and browser != "C":
             print(Message.WARNING.value
                   + f"'{browser}' is NOT a valid option for the BROWSER"
@@ -85,7 +85,10 @@ def check_element_exists(selectorType: str, selector: str):
 
 
 def select_twitter_user():
-    username: str = input("Type the username on Twitter: @")
+    username: str = input(Message.REQUEST.value
+                          + "Type the username on Twitter: "
+                          + Message.INPUT.value + "@")
+    print(Message.RESET.value, end="")
     url: str = f"https://twitter.com/{username}"
     print(Message.INFO.value
           + f"Accessing: {url}"
@@ -95,8 +98,7 @@ def select_twitter_user():
     if check_element_exists(SelectorType.TAG_NAME.value,
                             Selector.TWEET_TAG.value):
         print(Message.INFO.value
-              + f"The user @{username} exists,"
-              + "proceeding to download the text of the tweets"
+              + f"The user with username: @{username} if it exists"
               + Message.RESET.value)
     elif check_element_exists(SelectorType.CSS_SELECTOR.value,
                               Selector.PRIVATE_ACCOUNT_CSS.value):
@@ -229,6 +231,6 @@ if __name__ == "__main__":
                   + "and that the driver is in the browser-Drivers folder"
                   + Message.RESET.value)
     except KeyboardInterrupt:
-        print("\n\n" + Message.WARNING.value
+        print("\n" + Message.WARNING.value
               + "The script was interrupted by the keyboard command 'Crtl + C'."
               + Message.RESET.value)
