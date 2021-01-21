@@ -212,15 +212,16 @@ if __name__ == "__main__":
             driver.minimize_window()
             driver.implicitly_wait(15)  # *Delay time for browser actions
             username = select_twitter_user()
-            limitTweets = select_tweet_number_limit(username=username)
-            tweets = get_tweets(username=username, limitTweets=limitTweets)
-            if tweets is not None:
-                for tweet in tweets:
-                    print(tweet, end="\n")
-            else:
-                print(Message.WARNING.value
-                      + f"The user: {username} has no tweets in his account"
-                      + Message.RESET.value)
+            if username is not None:
+                limitTweets = select_tweet_number_limit(username=username)
+                tweets = get_tweets(username=username, limitTweets=limitTweets)
+                if tweets is not None:
+                    for tweet in tweets:
+                        print(tweet, end="\n")
+                else:
+                    print(Message.WARNING.value
+                          + f"The user: {username} has no tweets in his account"
+                          + Message.RESET.value)
 
             driver.close()
 
