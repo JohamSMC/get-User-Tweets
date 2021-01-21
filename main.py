@@ -9,11 +9,13 @@ import csv
 def select_browser():
     browser: str = None
     while (browser != "F" and browser != "C"):
-        browser = input("Select BROWSER(Navegador)\n"
-                        "  F) Firefox\n"
-                        "  C) Google Chrome\n"
-                        "Option: ").upper()
-
+        browser = input(Message.REQUEST.value
+                        + "Select the BROWSER:\n"
+                        + "\t    F) Firefox\n"
+                        + "\t    C) Google Chrome\n"
+                        + "\t Option: "
+                        + Message.INPUT.value).upper()
+        print(Message.RESET.value)
         if browser != "F" and browser != "C":
             print(Message.WARNING.value
                   + f"'{browser}' is NOT a valid option for the BROWSER"
@@ -83,9 +85,11 @@ def check_element_exists(selectorType: str, selector: str):
 
 
 def select_twitter_user():
-    username: str = input("Enter the username on Twitter: @")
+    username: str = input("Type the username on Twitter: @")
     url: str = f"https://twitter.com/{username}"
-    print(f"Accessing: {url}")
+    print(Message.INFO.value
+          + f"Accessing: {url}"
+          + Message.RESET.value)
     driver.get(url=url)
 
     if check_element_exists(SelectorType.TAG_NAME.value,
@@ -152,8 +156,11 @@ def remove_tweet():
     driver.execute_script("return document.getElementsByTagName('article')[0].remove();")
 
 
-def get_tweets(username: str):
+def get_tweets(username: str, limitTweets: int):
+    number_tweets_obtained: int = 0
     while check_element_exists(SelectorType.TAG_NAME.value, Selector.TWEET_TAG.value):
+        if limitTweets > 0 and limitTweets == number_tweets_obtained:
+            break
         fullTweet = driver.find_element_by_tag_name(Selector.TWEET_TAG.value)
 
         isRetweeted = is_retweet(fullTweet=fullTweet)
@@ -165,36 +172,63 @@ def get_tweets(username: str):
                "is_retweeted": isRetweeted,
                "text_tweet": textTweet})
 
+        number_tweets_obtained += 1
         remove_tweet()
+
+
+def select_tweet_number_limit(username: str):
+    limitTweets: int = -1
+    while (limitTweets < 0):
+        limitTweets = input(Message.REQUEST.value
+                            + "Type the number of tweets you want to get from the user:"
+                            + f" @{username}, or type '0' to get all the tweets: "
+                            + Message.INPUT.value)
+        print(Message.RESET.value)
+        if not limitTweets.isnumeric():
+            print(Message.WARNING.value
+                  + "The value must be numerical and greater than or equal to 0"
+                  + Message.RESET.value)
+            limitTweets = -1
+        else:
+            limitTweets = int(limitTweets)
+    else:
+        return limitTweets
 
 
 if __name__ == "__main__":
     browser: str = None
     driver = None
     username: str = None
+    limitTweets = None
 
-    browser = select_browser()
-    pathDriver = os.path.abspath(path=BrowserDriver.PATH_DRIVERS.value)
-    driver = start_browser(pathDriver=pathDriver, broswer=browser)
-    if driver is not None:
-        tweets = []
-        driver.minimize_window()
-        driver.implicitly_wait(15)  # *Delay time for browser actions
-        username = select_twitter_user()
-        tweets = get_tweets(username=username)
-        if tweets is not None:
-            for tweet in tweets:
-                print(tweet, end="\n")
+    try:
+        browser = select_browser()
+        pathDriver = os.path.abspath(path=BrowserDriver.PATH_DRIVERS.value)
+        driver = start_browser(pathDriver=pathDriver, broswer=browser)
+        if driver is not None:
+            tweets = []
+            driver.minimize_window()
+            driver.implicitly_wait(15)  # *Delay time for browser actions
+            username = select_twitter_user()
+            limitTweets = select_tweet_number_limit(username=username)
+            tweets = get_tweets(username=username, limitTweets=limitTweets)
+            if tweets is not None:
+                for tweet in tweets:
+                    print(tweet, end="\n")
+            else:
+                print(Message.WARNING.value
+                      + f"The user: {username} has no tweets in his account"
+                      + Message.RESET.value)
+
+            driver.close()
+
         else:
-            print(Message.WARNING.value
-                  + f"The user: {username} has no tweets in his account"
+            print(Message.ERROR.value
+                  + "The browser could not be initialized, check that the version of the driver "
+                  + "matches the version of the browser you have installed, "
+                  + "and that the driver is in the browser-Drivers folder"
                   + Message.RESET.value)
-
-        driver.close()
-
-    else:
-        print(Message.ERROR.value
-              + "The browser could not be initialized, check that the version of the driver "
-              + "matches the version of the browser you have installed, "
-              + "and that the driver is in the browser-Drivers folder"
+    except KeyboardInterrupt:
+        print("\n\n" + Message.WARNING.value
+              + "The script was interrupted by the keyboard command 'Crtl + C'."
               + Message.RESET.value)
