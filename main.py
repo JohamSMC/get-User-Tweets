@@ -185,7 +185,7 @@ def select_tweet_number_limit(username: str):
                             + "Type the number of tweets you want to get from the user:"
                             + f" @{username}, or type '0' to get all the tweets: "
                             + Message.INPUT.value)
-        print(Message.RESET.value)
+        print(Message.RESET.value, end="")
         if not limitTweets.isnumeric():
             print(Message.WARNING.value
                   + "The value must be numerical and greater than or equal to 0"
@@ -195,6 +195,18 @@ def select_tweet_number_limit(username: str):
             limitTweets = int(limitTweets)
     else:
         return limitTweets
+
+
+def build_csv_tweets(tweets: iter, username: str, fileNumber: str = "1"):
+    CSV_COLUMNS = ["username", "date_tweet", "is_retweeted", "text_tweet"]
+    if len(fileNumber) == 1:
+        fileNumber = "0" + fileNumber
+    CSV_NAME = f"tweets/tweets-{username}_{fileNumber}.csv"
+    with open(file=CSV_NAME, mode='w',) as csv_file:
+        writer = csv.DictWriter(f=csv_file, fieldnames=CSV_COLUMNS)
+        writer.writeheader()
+        for tweet in tweets:
+            writer.writerow(tweet)
 
 
 if __name__ == "__main__":
@@ -216,8 +228,7 @@ if __name__ == "__main__":
                 limitTweets = select_tweet_number_limit(username=username)
                 tweets = get_tweets(username=username, limitTweets=limitTweets)
                 if tweets is not None:
-                    for tweet in tweets:
-                        print(tweet, end="\n")
+                    build_csv_tweets(tweets=tweets, username=username)
                 else:
                     print(Message.WARNING.value
                           + f"The user: {username} has no tweets in his account"
@@ -234,4 +245,8 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("\n" + Message.WARNING.value
               + "The script was interrupted by the keyboard command 'Crtl + C'."
+              + Message.RESET.value)
+    except Exception as e:
+        print("\n" + Message.ERROR.value
+              + "Unexpected Error \nERROR INFORMATION: " + str(e)
               + Message.RESET.value)
