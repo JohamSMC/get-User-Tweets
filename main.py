@@ -53,7 +53,7 @@ def start_browser(pathDriver: str, broswer: str):
             driver = webdriver.Firefox(
                 executable_path=f"{pathDriver}/{BrowserDriver.FIREFOX.value}")
         elif broswer == BrowserDriver.CHROME.name:
-            driver = webdriver.Firefox(
+            driver = webdriver.Chrome(
                 executable_path=f"{pathDriver}/{BrowserDriver.CHROME.value}")
     finally:
         return driver
