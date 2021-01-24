@@ -77,6 +77,8 @@ def check_element_exists(selectorType: str, selector: str):
             driver.find_element_by_tag_name(selector)
         elif selectorType == SelectorType.CSS_SELECTOR.value:
             driver.find_element_by_css_selector(selector)
+        elif selectorType == SelectorType.XPATH.value:
+            driver.find_element_by_xpath(selector)
         else:
             return False
     except NoSuchElementException:
@@ -105,6 +107,12 @@ def select_twitter_user():
         print(Message.WARNING.value
               + "The account is private"
               + Message.RESET.value)
+        username = None
+    elif check_element_exists(SelectorType.XPATH.value,
+                              Selector.SUSPENDED_ACCOUNT_XPATH.value):
+        print(Message.WARNING.value
+              + "The account is suspended"
+                + Message.RESET.value)
         username = None
     elif check_element_exists(SelectorType.CSS_SELECTOR.value,
                               Selector.PAGE_NOT_FOUND_CSS.value):
