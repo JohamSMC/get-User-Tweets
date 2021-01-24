@@ -19,11 +19,12 @@ class BrowserDriver(enum.Enum):
 class SelectorType(enum.Enum):
     TAG_NAME = "TAG_NAME"
     CSS_SELECTOR = "CSS_SELECTOR"
+    XPATH = "XPATH"
 
 
 class Selector(enum.Enum):
-    PRIVATE_ACCOUNT_CSS = (
-        "span.r-1b6yd1w > svg:nth-child(1)> g:nth-child(1)"
-        + "> path:nth-child(1)")
+    PRIVATE_ACCOUNT_CSS = "span.r-1b6yd1w > svg:nth-child(1)> g:nth-child(1) > path:nth-child(1)"
     PAGE_NOT_FOUND_CSS = "h1.css-901oao > span:nth-child(1)"
+    SUSPENDED_ACCOUNT_XPATH = ("/html/body/div/div/div/div[2]/main/div/div/div/div[1]/div/div[2]"
+                               + "/div/div/div[2]/div[1]/span")
     TWEET_TAG = "article"
