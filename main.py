@@ -206,9 +206,10 @@ def build_csv_tweets(tweets: iter, username: str, fileNumber: str = "1"):
         writer = csv.DictWriter(f=csv_file, fieldnames=CSV_COLUMNS)
         writer.writeheader()
         tweet_counter: int = 0
-        for tweet in tweets:
+        for index, tweet in enumerate(tweets, start=1):
             writer.writerow(tweet)
             tweet_counter += 1
+            print(f"N of tweets downloaded till now {index}")
         return tweet_counter
 
 
@@ -225,7 +226,7 @@ if __name__ == "__main__":
         if driver is not None:
             tweets = []
             driver.minimize_window()
-            driver.implicitly_wait(10)  # *Delay time for browser actions
+            driver.implicitly_wait(12)  # *Delay time for browser actions
             username = select_twitter_user()
             if username is not None:
                 limitTweets = select_tweet_number_limit(username=username)
@@ -233,9 +234,8 @@ if __name__ == "__main__":
                 if tweets is not None:
                     tweet_counter = build_csv_tweets(tweets=tweets, username=username)
                     print(Message.INFO.value
-                          + f"We obtained {tweet_counter} TWEETS from "
-                          + f"the account with USERNAME: @{username}"
-                          + "\n\tCheck in the folder 'tweets' the csv file(s) with the tweets")
+                          + f"The total N of TWEETS: {tweet_counter} from USERNAME: @{username}"
+                          + "\nCheck in the folder 'tweets' the csv file(s) with the tweets")
                 else:
                     print(Message.WARNING.value
                           + f"The user: {username} has no tweets in his account"
