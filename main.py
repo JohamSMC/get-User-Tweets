@@ -97,23 +97,27 @@ def select_twitter_user():
           + Message.RESET.value)
     driver.get(url=url)
 
+    # ? Check if the account Exists
     if check_element_exists(SelectorType.TAG_NAME.value,
                             Selector.TWEET_TAG.value):
         print(Message.INFO.value
               + f"The user with username: @{username} if it exists"
               + Message.RESET.value)
+    # ? Check if the account is Private
     elif check_element_exists(SelectorType.CSS_SELECTOR.value,
                               Selector.PRIVATE_ACCOUNT_CSS.value):
         print(Message.WARNING.value
               + "The account is private"
               + Message.RESET.value)
         username = None
+    # ? Check if the account is suspended
     elif check_element_exists(SelectorType.XPATH.value,
                               Selector.SUSPENDED_ACCOUNT_XPATH.value):
         print(Message.WARNING.value
               + "The account is suspended"
                 + Message.RESET.value)
         username = None
+    # ? Check if the account does NOT Exist
     elif check_element_exists(SelectorType.CSS_SELECTOR.value,
                               Selector.PAGE_NOT_FOUND_CSS.value):
         print(Message.WARNING.value
