@@ -32,13 +32,13 @@ def select_browser():
     return browser
 
 
-def start_browser(pathDriver: str, broswer: str):
+def start_browser(pathDriver: str, browser: str):
     """Method that receives a path and the browser that
     will use Selenium [Firefox, Google Chrome, etc.] to initialize the browser
 
     Args:
         pathDriver (str): path where the driver is located\
-        broswer (str): browser that uses selenium
+        browser (str): browser that uses selenium
 
     Returns:
         The initialized browser driver
@@ -49,10 +49,10 @@ def start_browser(pathDriver: str, broswer: str):
     driver = None
 
     try:
-        if broswer == BrowserDriver.FIREFOX.name:
+        if browser == BrowserDriver.FIREFOX.name:
             driver = webdriver.Firefox(
                 executable_path=f"{pathDriver}/{BrowserDriver.FIREFOX.value}")
-        elif broswer == BrowserDriver.CHROME.name:
+        elif browser == BrowserDriver.CHROME.name:
             driver = webdriver.Chrome(
                 executable_path=f"{pathDriver}/{BrowserDriver.CHROME.value}")
     finally:
@@ -63,7 +63,7 @@ def check_element_exists(selectorType: str, selector: str):
     """Checks if an element exists on the current website
 
     Args:
-        selectorType (str): Selector type [css_selecetor, tag_name, name, xpath, etc],
+        selectorType (str): Selector type [css_selector, tag_name, name, xpath, etc],
                             for more information see selenium documentation
         selector (str): Selector value
 
@@ -235,7 +235,7 @@ if __name__ == "__main__":
     try:
         browser = select_browser()
         pathDriver = os.path.abspath(path=BrowserDriver.PATH_DRIVERS.value)
-        driver = start_browser(pathDriver=pathDriver, broswer=browser)
+        driver = start_browser(pathDriver=pathDriver, browser=browser)
         if driver is not None:
             tweets = []
             driver.minimize_window()
@@ -264,7 +264,7 @@ if __name__ == "__main__":
                   + Message.RESET.value)
     except KeyboardInterrupt:
         print("\n" + Message.WARNING.value
-              + "The script was interrupted by the keyboard command 'Crtl + C'."
+              + "The script was interrupted by the keyboard command 'Ctrl + C'."
               + Message.RESET.value)
     except Exception as e:
         print("\n" + Message.ERROR.value
