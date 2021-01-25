@@ -230,6 +230,7 @@ if __name__ == "__main__":
     driver = None
     username: str = None
     limitTweets = None
+    DELAY_BROWSER_ACTIONS = 15
 
     try:
         browser = select_browser()
@@ -238,7 +239,7 @@ if __name__ == "__main__":
         if driver is not None:
             tweets = []
             driver.minimize_window()
-            driver.implicitly_wait(12)  # *Delay time for browser actions
+            driver.implicitly_wait(DELAY_BROWSER_ACTIONS)
             username = select_twitter_user()
             if username is not None:
                 limitTweets = select_tweet_number_limit(username=username)
