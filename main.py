@@ -88,7 +88,7 @@ def check_element_exists(selectorType: str, selector: str):
 
 def select_twitter_user():
     username: str = input(Message.REQUEST.value
-                          + "Type the username on Twitter: "
+                          + "Type the username: "
                           + Message.INPUT.value + "@")
     print(Message.RESET.value, end="")
     url: str = f"https://twitter.com/{username}"
