@@ -1,9 +1,12 @@
+import csv
+import os
+from typing import List
+
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.remote.webelement import WebElement
-from utilities import Message, BrowserDriver, SelectorType, Selector
-import os
-import csv
+
+from utilities import BrowserDriver, Message, Selector, SelectorType
 
 
 def select_browser():
@@ -32,7 +35,7 @@ def select_browser():
     return browser
 
 
-def start_browser(pathDriver: str, browser: str):
+def start_browser(path_driver: str, browser: str):
     """Method that receives a path and the browser that
     will use Selenium [Firefox, Google Chrome, etc.] to initialize the browser
 
@@ -51,15 +54,15 @@ def start_browser(pathDriver: str, browser: str):
     try:
         if browser == BrowserDriver.FIREFOX.name:
             driver = webdriver.Firefox(
-                executable_path=f"{pathDriver}/{BrowserDriver.FIREFOX.value}")
+                executable_path=f"{path_driver}/{BrowserDriver.FIREFOX.value}")
         elif browser == BrowserDriver.CHROME.name:
             driver = webdriver.Chrome(
-                executable_path=f"{pathDriver}/{BrowserDriver.CHROME.value}")
+                executable_path=f"{path_driver}/{BrowserDriver.CHROME.value}")
     finally:
         return driver
 
 
-def check_element_exists(selectorType: str, selector: str):
+def check_element_exists(selector_type: str, selector: str):
     """Checks if an element exists on the current website
 
     Args:
@@ -73,12 +76,12 @@ def check_element_exists(selectorType: str, selector: str):
     """
 
     try:
-        if selectorType == SelectorType.TAG_NAME.value:
-            driver.find_element_by_tag_name(selector)
-        elif selectorType == SelectorType.CSS_SELECTOR.value:
-            driver.find_element_by_css_selector(selector)
-        elif selectorType == SelectorType.XPATH.value:
-            driver.find_element_by_xpath(selector)
+        if selector_type == SelectorType.TAG_NAME.value:
+            driver.find_element_by_tag_name(selector)  # type: ignore
+        elif selector_type == SelectorType.CSS_SELECTOR.value:
+            driver.find_element_by_css_selector(selector)  # type: ignore
+        elif selector_type == SelectorType.XPATH.value:
+            driver.find_element_by_xpath(selector)  # type: ignore
         else:
             return False
     except NoSuchElementException:
@@ -133,7 +136,7 @@ def select_twitter_user():
     return username
 
 
-def is_retweet(fullTweet: WebElement):
+def is_retweet(full_tweet: WebElement):
     """[summary]
 
     Args:
@@ -141,26 +144,26 @@ def is_retweet(fullTweet: WebElement):
     Returns:
         bool: True if Tweet is a Retweet or False if Not a Retweet
     """
-    if fullTweet.text.split("\n")[0] != fullTweet.text.split("\n")[1][1:]:
+    if full_tweet.text.split("\n")[0] != full_tweet.text.split("\n")[1][1:]:
         return True
     else:
         return False
 
 
-def get_tweet_text(fullTweet: WebElement, isRetweeted: bool):
-    if isRetweeted:
-        textTweet = fullTweet.text.split("\n")[5:]
+def get_tweet_text(full_tweet: WebElement, is_retweeted: bool):
+    if is_retweeted:
+        text_tweet = full_tweet.text.split("\n")[5:]
     else:
-        textTweet = fullTweet.text.split("\n")[4:]
+        text_tweet = full_tweet.text.split("\n")[4:]
 
-    while(textTweet[-1].isdigit()):
-        textTweet.pop()
+    while(text_tweet[-1].isdigit()):
+        text_tweet.pop()
 
-    return "".join(textTweet)
+    return "".join(text_tweet)
 
 
-def get_tweet_date(fullTweet: WebElement):
-    return str(fullTweet.find_element_by_tag_name("time").get_attribute("datetime"))
+def get_tweet_date(full_tweet: WebElement):
+    return str(full_tweet.find_element_by_tag_name("time").get_attribute("datetime"))
 
 
 def remove_tweet():
@@ -170,52 +173,52 @@ def remove_tweet():
     driver.execute_script("return document.getElementsByTagName('article')[0].remove();")
 
 
-def get_tweets(username: str, limitTweets: int):
+def get_tweets(username: str, limit_tweets: int):
     number_tweets_obtained: int = 0
     while check_element_exists(SelectorType.TAG_NAME.value, Selector.TWEET_TAG.value):
-        if limitTweets > 0 and limitTweets == number_tweets_obtained:
+        if limit_tweets > 0 and limit_tweets == number_tweets_obtained:
             break
-        fullTweet = driver.find_element_by_tag_name(Selector.TWEET_TAG.value)
+        full_tweet = driver.find_element_by_tag_name(Selector.TWEET_TAG.value)  # type: ignore
 
-        isRetweeted = is_retweet(fullTweet=fullTweet)
-        textTweet = get_tweet_text(fullTweet=fullTweet, isRetweeted=isRetweeted)
-        dateTweet = get_tweet_date(fullTweet=fullTweet)
+        is_retweeted = is_retweet(full_tweet=full_tweet)
+        text_tweet = get_tweet_text(full_tweet=full_tweet, is_retweeted=is_retweeted)
+        date_tweet = get_tweet_date(full_tweet=full_tweet)
 
         yield({"username": username,
-               "date_tweet": dateTweet,
-               "is_retweeted": isRetweeted,
-               "text_tweet": textTweet})
+               "date_tweet": date_tweet,
+               "is_retweeted": is_retweeted,
+               "text_tweet": text_tweet})
 
         number_tweets_obtained += 1
         remove_tweet()
 
 
 def select_tweet_number_limit(username: str):
-    limitTweets: int = -1
-    while (limitTweets < 0):
-        limitTweets = input(Message.REQUEST.value
-                            + "Type the number of tweets you want to get from the user:"
-                            + f" @{username}, or type '0' to get all the tweets: "
-                            + Message.INPUT.value)
+    limit_tweets: int = -1
+    while (limit_tweets < 0):
+        limit_tweets = input(Message.REQUEST.value
+                             + "Type the number of tweets you want to get from the user:"
+                             + f" @{username}, or type '0' to get all the tweets: "
+                             + Message.INPUT.value)  # type: ignore
         print(Message.RESET.value, end="")
-        if not limitTweets.isnumeric():
+        if not limit_tweets.isnumeric():  # type: ignore
             print(Message.WARNING.value
                   + "The value must be numerical and greater than or equal to 0"
                   + Message.RESET.value)
-            limitTweets = -1
+            limit_tweets = -1
         else:
-            limitTweets = int(limitTweets)
+            limit_tweets = int(limit_tweets)
     else:
-        return limitTweets
+        return limit_tweets
 
 
-def build_csv_tweets(tweets: iter, username: str, fileNumber: str = "1"):
-    CSV_COLUMNS = ["username", "date_tweet", "is_retweeted", "text_tweet"]
-    if len(fileNumber) == 1:
-        fileNumber = "0" + fileNumber
-    CSV_NAME = f"tweets/tweets-{username}_{fileNumber}.csv"
-    with open(file=CSV_NAME, mode='w',) as csv_file:
-        writer = csv.DictWriter(f=csv_file, fieldnames=CSV_COLUMNS)
+def build_csv_tweets(tweets: List, username: str, file_number: str = "1"):
+    csv_columns = ["username", "date_tweet", "is_retweeted", "text_tweet"]
+    if len(file_number) == 1:
+        file_number = "0" + file_number
+    csv_name = f"tweets/tweets-{username}_{file_number}.csv"
+    with open(file=csv_name, mode='w',) as csv_file:
+        writer = csv.DictWriter(f=csv_file, fieldnames=csv_columns)
         writer.writeheader()
         tweet_counter: int = 0
         for index, tweet in enumerate(tweets, start=1):
@@ -226,24 +229,24 @@ def build_csv_tweets(tweets: iter, username: str, fileNumber: str = "1"):
 
 
 if __name__ == "__main__":
-    browser: str = None
+    browser: str = ""
     driver = None
-    username: str = None
-    limitTweets = None
+    username: str = ""
+    limit_tweets = None
     DELAY_BROWSER_ACTIONS = 15
 
     try:
         browser = select_browser()
-        pathDriver = os.path.abspath(path=BrowserDriver.PATH_DRIVERS.value)
-        driver = start_browser(pathDriver=pathDriver, browser=browser)
+        path_driver = os.path.abspath(path=BrowserDriver.PATH_DRIVERS.value)
+        driver = start_browser(path_driver=path_driver, browser=browser)
         if driver is not None:
             tweets = []
             driver.minimize_window()
             driver.implicitly_wait(DELAY_BROWSER_ACTIONS)
             username = select_twitter_user()
             if username is not None:
-                limitTweets = select_tweet_number_limit(username=username)
-                tweets = get_tweets(username=username, limitTweets=limitTweets)
+                limit_tweets = select_tweet_number_limit(username=username)
+                tweets = get_tweets(username=username, limit_tweets=limit_tweets)
                 if tweets is not None:
                     tweet_counter = build_csv_tweets(tweets=tweets, username=username)
                     print(Message.INFO.value
