@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "/home/sebastian/.pyenv/versions/env-getUserTweets/bin/python",
+    "python.pythonPath": "/home/sebastian/.local/share/virtualenvs/getUserTweets-Q4ajvQ1_/bin/python3.8",
     "python.linting.enabled": true,
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {"source.organizeImports": true},
