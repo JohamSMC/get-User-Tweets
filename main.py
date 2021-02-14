@@ -5,6 +5,7 @@ from typing import List
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.remote.webelement import WebElement
+from tqdm import tqdm
 
 from utilities import BrowserDriver, Message, Selector, SelectorType
 
@@ -221,10 +222,15 @@ def build_csv_tweets(tweets: List, username: str, file_number: str = "1"):
         writer = csv.DictWriter(f=csv_file, fieldnames=csv_columns)
         writer.writeheader()
         tweet_counter: int = 0
-        for index, tweet in enumerate(tweets, start=1):
+        print("")
+        for index, tweet in enumerate(
+                tqdm(
+                    tweets,
+                    desc="Creating csv file"),
+                start=1):
             writer.writerow(tweet)
             tweet_counter += 1
-            print(f"N of tweets downloaded till now {index}")
+        print("")
         return tweet_counter
 
 
